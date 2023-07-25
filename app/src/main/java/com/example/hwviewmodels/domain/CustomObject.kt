@@ -14,10 +14,8 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.hwviewmodels.ui.theme.CustomTheme
@@ -26,7 +24,7 @@ import com.example.hwviewmodels.ui.theme.CustomTheme
 data class CustomObject(val id: Int, val name: String)
 
 @Composable
-fun CustomScreen() {
+fun CustomScreen(viewModel: CustomObjectViewModel) {
 
     Column() {
         val customObjects = remember {
@@ -54,7 +52,7 @@ fun CustomScreen() {
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        CustomTextField()
+        CustomTextField(text = viewModel.text) { viewModel.onTextChange(it) }
 
         Spacer(modifier = Modifier.height(16.dp))
         CustomButton(onClick = {
@@ -64,14 +62,14 @@ fun CustomScreen() {
 }
 
 @Composable
-fun CustomTextField() {
-    var text by remember { mutableStateOf("") }
+fun CustomTextField(
+    text: State<String>,
+    onChanged: (String) -> Unit
+) {
 
     TextField(
-        value = text,
-        onValueChange = { newText ->
-            text = newText
-        },
+        value = text.value,
+        onValueChange = onChanged,
         label = { Text("Enter your text") },
         modifier = Modifier
             .fillMaxWidth()
